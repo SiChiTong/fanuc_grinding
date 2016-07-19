@@ -163,6 +163,7 @@ int main(int argc,
 
   while (node->ok())
   {
+    sleep(1);
   }
   spinner.stop();
   return 0;

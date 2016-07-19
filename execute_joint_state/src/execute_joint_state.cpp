@@ -64,11 +64,12 @@ int main(int argc, char **argv)
 
   // Create service server and wait for incoming requests
   ros::ServiceServer service = node->advertiseService("execute_joint_state_service", moveRobotExecuteJointState);
-  ros::AsyncSpinner spinner(2);
+  ros::AsyncSpinner spinner(1);
   spinner.start();
 
   while (node->ok())
   {
+    sleep(1);
   }
   spinner.stop();
   return 0;
