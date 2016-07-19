@@ -8,4 +8,4 @@ float64 VoxelGridLeafSize
 ---
 bool ReturnStatus
 string ReturnMessage
-string NumerizedMeshName
+string ScanMeshName

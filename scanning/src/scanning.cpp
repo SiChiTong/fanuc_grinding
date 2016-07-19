@@ -267,8 +267,15 @@ bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
   }
 
   // Save the point cloud with CAD meshname and a suffix
-  res.NumerizedMeshName = req.CADName.substr(0, req.CADName.size() - 4) + "_defect.ply";
-  pcl::io::savePLYFileBinary(res.NumerizedMeshName, *stacked_point_cloud);
+  if (req.CADName.size() < 4)
+  {
+    res.ReturnStatus = false;
+    res.ReturnMessage = "CAD mesh name is too short!";
+    return true;
+  }
+
+  res.ScanMeshName = req.CADName.substr(0, req.CADName.size() - 4) + "_scan.ply";
+  pcl::io::savePLYFileBinary(res.ScanMeshName, *stacked_point_cloud);
 
   // Call publish_meshfile service
   fanuc_grinding_publish_meshfile::PublishMeshfileService srv_publish_meshfile;
@@ -278,7 +285,7 @@ bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
   // Publish final point cloud
   status.data = "Publishing final point cloud";
   status_pub->publish(status);
-  srv_publish_meshfile.request.MeshName = res.NumerizedMeshName;
+  srv_publish_meshfile.request.MeshName = res.ScanMeshName;
   srv_publish_meshfile.request.MarkerName = req.MarkerName;
   srv_publish_meshfile.request.PosX =
   srv_publish_meshfile.request.PosY =
@@ -287,10 +294,14 @@ bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
   srv_publish_meshfile.request.RotY =
   srv_publish_meshfile.request.RotZ = 0.0;
   srv_publish_meshfile.request.RotW = 1.0;
+  srv_publish_meshfile.request.ColorR = 75 / 255.0;
+  srv_publish_meshfile.request.ColorG = 75 / 255.0;
+  srv_publish_meshfile.request.ColorB = 130 / 255.0;
+  srv_publish_meshfile.request.ColorA = 1.0;
   publish_meshfile_service.call(srv_publish_meshfile);
 
   res.ReturnStatus = true;
-  boost::filesystem::path p(res.NumerizedMeshName);
+  boost::filesystem::path p(res.ScanMeshName);
   res.ReturnMessage = "Scan succeeded, file:\n" + p.filename().string();
   return true;
 }
