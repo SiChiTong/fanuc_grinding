@@ -450,7 +450,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::scanning()
   {
     //Q_EMIT enablePanelAlignment();
     Q_EMIT enablePanelPathPlanning();
-    Q_EMIT sendScanDatas(QString::fromStdString(srv_scanning_.response.NumerizedMeshName));
+    Q_EMIT sendScanDatas(QString::fromStdString(srv_scanning_.response.ScanMeshName));
   }
   else
   {
@@ -540,7 +540,7 @@ void fanuc_grinding_rviz_plugin::ScanningWidget::load(const rviz::Config& config
   else
   {
     std::string meshes_path = ros::package::getPath(package_name_) + "/meshes/";
-    cad_meshname_->setText(QString::fromStdString(meshes_path+"DAC_580813_cad.stl"));
+    cad_meshname_->setText(QString::fromStdString(meshes_path+"DAC_580813.stl"));
   }
 
   if (config.mapGetString(objectName() + "cad_marker_name", &tmp))
