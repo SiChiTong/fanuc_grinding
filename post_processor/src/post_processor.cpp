@@ -90,9 +90,8 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   fanuc_pp.generateProgram(program);
   //ROS_INFO_STREAM("This is the generated program:\n\n" << program);
 
-  // TODO: Check if writing in a .ls file works
   std::ofstream tp_program_file;
-  std::string file_location = req.ProgramLocation + req.ProgramName;
+  std::string file_location = req.ProgramLocation + req.ProgramName + ".ls";
 
 
   tp_program_file.open(file_location.c_str(), std::ios::out);
@@ -114,7 +113,6 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
     return true;
   }
 
-  // TODO: Try to upload
   ROS_INFO_STREAM("Try to upload program on IP address: " << req.IpAdress);
   if (!fanuc_pp.uploadToFtp(req.IpAdress))
   {

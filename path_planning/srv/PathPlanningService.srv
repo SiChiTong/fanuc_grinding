@@ -11,6 +11,7 @@ bool AngleZ
 float64 LeanAngle
 bool Compute
 bool Simulate
+float64 TrajectoryZOffset
 ---
 bool ReturnStatus
 string ReturnMessage
