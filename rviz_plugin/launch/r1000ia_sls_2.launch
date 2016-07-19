@@ -16,12 +16,6 @@
   <arg name="robot_ip" unless="$(arg sim)" />
   <arg name="use_bswap" unless="$(arg sim)" default="true" />
 
-  <!-- load PLY file from command line in order to use it in C++ programm  -->
-  <!--
-  <arg name="meshname" default="" />  
-  <param name="meshname_param" value="$(arg meshname)" />
-  -->
-
   <!-- load the robot_description parameter before launching ROS-I nodes -->
   <include file="$(find fanuc_r1000ia_sls_2_grinding_moveit_config)/launch/planning_context.launch" >
     <arg name="load_robot_description" value="true" />
@@ -31,6 +25,7 @@
   <group if="$(arg sim)">
     <remap from="joint_states" to="fanuc/joint_states"/>
     <include file="$(find industrial_robot_simulator)/launch/robot_interface_simulator.launch" />
+    <rosparam param="initial_joint_state">[0.0, 0.3, -0.3, 0.0, -1.3, -1.57]</rosparam>
   </group>
 
   <!-- run the "real robot" interface nodes -->
