@@ -68,7 +68,6 @@
   <!-- Including different nodes -->
   <node name="publish_meshfile" pkg="fanuc_grinding_publish_meshfile" type="fanuc_grinding_publish_meshfile" output="screen"/>
   <node name="scanning" pkg="fanuc_grinding_scanning" type="fanuc_grinding_scanning" output="screen"/>
-  <node name="execute_joint_state" pkg="fanuc_grinding_execute_joint_state" type="fanuc_grinding_execute_joint_state" output="screen"/>
   <node name="alignment" pkg="fanuc_grinding_alignment" type="fanuc_grinding_alignment" output="screen"/>
   <node name="comparison" pkg="fanuc_grinding_comparison" type="fanuc_grinding_comparison" output="screen"/>
   <node name="path_planning" pkg="fanuc_grinding_path_planning" type="fanuc_grinding_path_planning" output="screen"/>

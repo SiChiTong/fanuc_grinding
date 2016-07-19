@@ -8,7 +8,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>fanuc_grinding_execute_joint_state</build_depend>
   <build_depend>fanuc_grinding_publish_meshfile</build_depend>
   <build_depend>genmsg</build_depend>
   <build_depend>message_generation</build_depend>
@@ -19,7 +18,6 @@
 
   <build_export_depend>std_msgs</build_export_depend>
 
-  <exec_depend>fanuc_grinding_execute_joint_state</exec_depend>
   <exec_depend>fanuc_grinding_publish_meshfile</exec_depend>
   <exec_depend>fanuc_r1000ia_sls_2_grinding_moveit_config</exec_depend>
   <exec_depend>message_runtime</exec_depend>
