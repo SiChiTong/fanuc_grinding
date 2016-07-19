@@ -11,11 +11,12 @@ one node of the entire demonstrator
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <std_msgs/String.h>
+#include <moveit/move_group_interface/move_group.h>
+#include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/mark.h>
 #include "yaml_utils.h"
 #include <fanuc_grinding_scanning/ScanningService.h> // Description of the Service we will use
-#include <fanuc_grinding_execute_joint_state/ExecuteJointStateService.h> // We will call this service
 #include <fanuc_grinding_publish_meshfile/PublishMeshfileService.h>
 
 // PCL headers
@@ -33,9 +34,24 @@ typedef pcl::PointXYZ PointXYZ;
 typedef pcl::PointCloud<PointXYZ> PointCloudXYZ;
 
 boost::shared_ptr<ros::NodeHandle> node;
+boost::shared_ptr<move_group_interface::MoveGroup> group;
 
 /** Status publisher */
 boost::shared_ptr<ros::Publisher> status_pub;
+
+/**
+ * Move the robot to a set of joint values
+ * @param[in] joint_states
+ * @return  True if successful, false otherwise
+ */
+bool executeJointState(const std::vector<double> joint_states)
+{
+  // Give the joint state to execute
+  group->setJointValueTarget(joint_states);
+  if (group->move() == false)
+    return false;
+  return true;
+}
 
 /**
  * This is the service function that is called whenever a request is received
@@ -190,23 +206,12 @@ bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
   // Create entire point cloud
   PointCloudXYZ::Ptr stacked_point_cloud (new PointCloudXYZ());
 
-  // For each joint state, we call a service which execute this joint state
-  fanuc_grinding_execute_joint_state::ExecuteJointStateService srv_execute_joint_state;
-  ros::ServiceClient execute_joint_state_service =
-      node->serviceClient<fanuc_grinding_execute_joint_state::ExecuteJointStateService>("execute_joint_state_service");
-
   for(unsigned k = 0; k < joint_list.size(); ++k)
   {
-    // Add the joint state into the request
-    for(unsigned j = 0; j < joint.size(); ++j)
-      srv_execute_joint_state.request.JointState[j]=joint_list[k][j];
-
-    execute_joint_state_service.call(srv_execute_joint_state);
-
-    if(srv_execute_joint_state.response.ReturnStatus == false)
+    if(!executeJointState(joint_list[k]))
     {
       res.ReturnStatus = false;
-      res.ReturnMessage = "Problem occurred during scanning.\n" + srv_execute_joint_state.response.ReturnMessage;
+      res.ReturnMessage = "Could not move the robot for scanning pose " + boost::lexical_cast<std::string>(k);
       return true;
     }
     else
@@ -227,6 +232,7 @@ bool moveRobotScan(fanuc_grinding_scanning::ScanningService::Request &req,
         res.ReturnMessage = "Could not capture point cloud";
         return true;
       }
+
       status.data = "Point cloud " + boost::lexical_cast<std::string>(k + 1) +
                     "/" + boost::lexical_cast<std::string>(joint_list.size()) + " captured";
       status_pub->publish(status);
@@ -294,6 +300,12 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "scanning");
   node.reset(new ros::NodeHandle);
 
+  // Initialize move group
+  group.reset(new move_group_interface::MoveGroup("manipulator"));
+  group->setPlannerId("RRTConnectkConfigDefault");
+  group->setPoseReferenceFrame("/base");
+  group->setPlanningTime(2);
+
   status_pub.reset(new ros::Publisher);
   *status_pub = node->advertise<std_msgs::String>("scanning_status", 1);
 
@@ -305,6 +317,7 @@ int main(int argc, char **argv)
   while (node->ok())
   {
     sleep(1);
+    ros::spin();
   }
   spinner.stop();
   return 0;
