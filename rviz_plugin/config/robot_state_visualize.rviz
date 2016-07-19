@@ -27,21 +27,22 @@ Panels:
     SyncSource: ""
   - Class: fanuc_grinding_rviz_plugin/fanuc_grinding
     Name: fanuc_grinding
-    PathPlanningWidget_angle_value: -20
-    PathPlanningWidget_covering_percentage: 10
+    PathPlanningWidget_angle_value: -25
+    PathPlanningWidget_covering_percentage: 54
     PathPlanningWidget_depth_of_path: 30
-    PathPlanningWidget_extrication_radius: 35
-    PathPlanningWidget_grinder_width: 20
-    PathPlanningWidget_radio_x: true
-    PathPlanningWidget_radio_y: false
+    PathPlanningWidget_extrication_radius: 40
+    PathPlanningWidget_grinder_width: 31
+    PathPlanningWidget_radio_x: false
+    PathPlanningWidget_radio_y: true
     PathPlanningWidget_radio_z: false
     PathPlanningWidget_surfacing_mode: true
+    PathPlanningWidget_trajectory_z_offset: 0
     PostProcessorWidget_comment: ""
     PostProcessorWidget_extrication_speed: 500
-    PostProcessorWidget_ip_adress: 192.168.100.200
+    PostProcessorWidget_ip_adress: 192.168.100.239
     PostProcessorWidget_machining_speed: 200
     PostProcessorWidget_program_name: ros_meulage_DaC
-    PostProcessorWidget_trajectory_z_offset: -400
+    PostProcessorWidget_trajectory_z_offset: 0
     PostProcessorWidget_upload_program: true
     ScanningWidget_cad_marker_name: cad
     ScanningWidget_down_sampling_leaf_size: 0.03
@@ -340,19 +341,19 @@ Visualization Manager:
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
-      Enabled: true
+      Enabled: false
       Marker Topic: /cad
       Name: Marker
       Namespaces:
         {}
       Queue Size: 2
-      Value: true
+      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /scan
       Name: Marker
       Namespaces:
-        {}
+        "": true
       Queue Size: 2
       Value: true
     - Class: rviz/MarkerArray
@@ -360,7 +361,9 @@ Visualization Manager:
       Marker Topic: /rviz_visual_tools
       Name: MarkerArray
       Namespaces:
-        {}
+        Arrow: true
+        Cylinder: true
+        Text: true
       Queue Size: 2
       Value: true
   Enabled: true
@@ -383,24 +386,24 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.32071
+      Distance: 1.49613
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.58519
-        Y: 0.0781493
-        Z: -0.061
-      Focal Shape Size: 0.1
+        X: 1.6809
+        Y: 0.0641521
+        Z: 0.0906194
+      Focal Shape Size: 0.01
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.414801
+      Pitch: 0.664797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.14495
-      Zoom Invariant Focal Shape: false
+      Yaw: 5.87494
+      Zoom Invariant Focal Shape: true
     Saved: ~
 Window Geometry:
   Displays:
