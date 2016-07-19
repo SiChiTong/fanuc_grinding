@@ -42,8 +42,6 @@ const std::string tcp_name("/grinding_disk_tcp");
 bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &req,
                   fanuc_grinding_path_planning::PathPlanningService::Response &res)
 {
-  ROS_INFO_STREAM(std::endl << req);
-
   if (!req.SurfacingMode)
   {
     res.ReturnStatus = false;
@@ -101,6 +99,7 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
   for (Eigen::Affine3d pose : way_points_vector)
   {
     geometry_msgs::Pose tmp;
+    pose.translation() += Eigen::Vector3d(0, 0, req.TrajectoryZOffset);
     tf::poseEigenToMsg(pose, tmp);
     way_points_msg.push_back(tmp);
   }

@@ -74,6 +74,7 @@ protected:
   QRadioButton* lean_angle_axis_z_;
   QDoubleSpinBox* angle_value_;
   QPushButton* compute_trajectory_;
+  QDoubleSpinBox* trajectory_z_offset_;
   QPushButton* execute_trajectory_;
 };
 

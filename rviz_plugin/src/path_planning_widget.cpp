@@ -84,11 +84,17 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   compute_trajectory_ = new QPushButton("Compute trajectory");
   compute_trajectory_->setMinimumHeight(90);
 
+  QLabel* trajectory_z_offset_label = new QLabel("Trajectory Z offset:");
+  trajectory_z_offset_ = new QDoubleSpinBox;
+  trajectory_z_offset_->setSuffix(" mm");
+  trajectory_z_offset_->setRange(-1000, 1000);
+  QHBoxLayout* trajectory_z_offset_layout = new QHBoxLayout();
+  trajectory_z_offset_layout->addWidget(trajectory_z_offset_label);
+  trajectory_z_offset_layout->addWidget(trajectory_z_offset_);
+
   execute_trajectory_ = new QPushButton("Execute trajectory");
   execute_trajectory_->setEnabled(false);
   execute_trajectory_->setMinimumHeight(60);
-  QHBoxLayout* button_path_planning_layout = new QHBoxLayout;
-  button_path_planning_layout->addWidget(execute_trajectory_);
 
   QVBoxLayout* path_planning_layout = new QVBoxLayout(this);
   path_planning_layout->addLayout(surfacing_mode_layout);
@@ -101,7 +107,9 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   path_planning_layout->addStretch(2);
   path_planning_layout->addWidget(compute_trajectory_);
   path_planning_layout->addStretch(1);
-  path_planning_layout->addLayout(button_path_planning_layout);
+  path_planning_layout->addWidget(trajectory_z_offset_label);
+  path_planning_layout->addWidget(trajectory_z_offset_);
+  path_planning_layout->addWidget(execute_trajectory_);
   path_planning_layout->addStretch(8);
 
   //Connect handlers
@@ -116,6 +124,7 @@ fanuc_grinding_rviz_plugin::PathPlanningWidget::PathPlanningWidget(QWidget* pare
   connect(lean_angle_axis_y_, SIGNAL(clicked()), this, SLOT(triggerSave()));
   connect(lean_angle_axis_z_, SIGNAL(clicked()), this, SLOT(triggerSave()));
   connect(angle_value_, SIGNAL(valueChanged(double)), this, SLOT(triggerSave()));
+  connect(trajectory_z_offset_, SIGNAL(valueChanged(int)), this, SLOT(triggerSave()));
 
   // Enable or disable compute_trajectory_button_
   connect(this, SIGNAL(enableComputeTrajectoryButton(bool)), this, SLOT(enableComputeTrajectoryButtonHandler(bool)));
@@ -161,6 +170,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::setPathPlanningParams(fanuc
   srv_path_planning_.request.AngleY = params.AngleY;
   srv_path_planning_.request.AngleZ = params.AngleZ;
   srv_path_planning_.request.LeanAngle = params.LeanAngle;
+  srv_path_planning_.request.TrajectoryZOffset = params.TrajectoryZOffset;
   updateGUI();
 }
 
@@ -175,6 +185,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateGUI()
   lean_angle_axis_y_->setChecked(srv_path_planning_.request.AngleY);
   lean_angle_axis_z_->setChecked(srv_path_planning_.request.AngleZ);
   angle_value_->setValue(srv_path_planning_.request.LeanAngle * 360.0 / M_PI); // radians to degrees
+  trajectory_z_offset_->setValue(srv_path_planning_.request.TrajectoryZOffset);
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
@@ -188,6 +199,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::updateInternalValues()
   srv_path_planning_.request.AngleY = lean_angle_axis_y_->isChecked();
   srv_path_planning_.request.AngleZ = lean_angle_axis_z_->isChecked();
   srv_path_planning_.request.LeanAngle = angle_value_->value() / 360.0 * M_PI; // degrees to radians
+  srv_path_planning_.request.TrajectoryZOffset = trajectory_z_offset_->value() / 1000.0; // millimeters to meters
 }
 
 void fanuc_grinding_rviz_plugin::PathPlanningWidget::setDepthOfPassEnable(const int state)
@@ -251,6 +263,9 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::executeTrajectoryButtonHand
     if(msgBox.exec() == QMessageBox::Abort)
       return;
   }
+
+  // Fill service parameters with GUI values
+  updateInternalValues();
 
   // get CAD and Scan params which are stored in grinding RViz plugin
   Q_EMIT getCADAndScanParams();
@@ -350,6 +365,7 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::save(rviz::Config config)
   config.mapSetValue(objectName() + "radio_y", lean_angle_axis_y_->isChecked());
   config.mapSetValue(objectName() + "radio_z", lean_angle_axis_z_->isChecked());
   config.mapSetValue(objectName() + "angle_value", angle_value_->value());
+  config.mapSetValue(objectName() + "trajectory_z_offset", trajectory_z_offset_->value());
 }
 
 // Load all configuration data for this panel from the given Config object.
@@ -399,4 +415,9 @@ void fanuc_grinding_rviz_plugin::PathPlanningWidget::load(const rviz::Config& co
     angle_value_->setValue(tmp_float);
   else
     angle_value_->setValue(10);
+
+  if (config.mapGetFloat(objectName() + "trajectory_z_offset", &tmp_float))
+    trajectory_z_offset_->setValue(tmp_float);
+  else
+    trajectory_z_offset_->setValue(0);
 }
