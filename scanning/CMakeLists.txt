@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(fanuc_grinding_scanning)
 
 find_package(catkin REQUIRED COMPONENTS
-			 fanuc_grinding_execute_joint_state
 			 fanuc_grinding_publish_meshfile
 			 genmsg
 			 moveit_ros_planning_interface

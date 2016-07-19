@@ -20,7 +20,6 @@ Directories in the project
 `alignment` | Description/implementation of the alignment service
 `comparison` | Description/implementation of the comparison service
 `documentation` | Contains explication about this package usage
-`execute_joint_state` | Description/implementation of a service to move the robot to a specific joint defined pose
 `fanuc_grinding` | Contains the meta-package files
 `path_planning` | Description/implementation of the path planning service. This makes use of the `bezier` package
 `post_processor` | Description/implementation of the post processor service to create a Fanuc TP program. This makes use of the `fanuc_post_processor` package
