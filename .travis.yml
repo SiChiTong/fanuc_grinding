@@ -4,6 +4,10 @@ language: generic
 
 compiler:
   - gcc
+  
+branches:
+  only:
+  - indigo-devel
 
 notifications:
   email:
