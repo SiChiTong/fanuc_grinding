@@ -7,7 +7,7 @@ compiler:
   
 branches:
   only:
-  - indigo-devel
+    - indigo-devel
 
 notifications:
   email:
