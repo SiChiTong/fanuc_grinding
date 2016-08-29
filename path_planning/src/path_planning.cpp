@@ -33,6 +33,12 @@ const std::string move_group_name("grinding_disk");
 /** Name of the TCP that should be used to compute the trajectories */
 const std::string tcp_name("/grinding_disk_tcp");
 
+/** Bezier path planner object*/
+boost::shared_ptr<BezierGrindingSurfacing> bezier;
+
+/** File path of the mesh used by the path planner*/
+std::string input_mesh_filename = "";
+
 /**
  * This is the service function that is called whenever a request is received
  * @param req[int]
@@ -59,9 +65,6 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
     std::string mesh_ressource = "package://" + package + "/meshes/";
     std::string mesh_ressource_file = "file://";
 
-    // Get PLY file name from command line
-    std::string input_mesh_filename = req.CADFileName;
-
     // Determine lean angle axis
     std::string lean_angle_axis;
     BezierGrindingSurfacing::AXIS_OF_ROTATION lean_axis;
@@ -78,13 +81,20 @@ bool pathPlanning(fanuc_grinding_path_planning::PathPlanningService::Request &re
       return true;
     }
 
-    BezierGrindingSurfacing bezier(input_mesh_filename, req.GrinderWidth, req.CoveringPercentage, req.ExtricationRadius,
-                                   req.LeanAngle, lean_axis);
+    if (!bezier || input_mesh_filename.compare(req.CADFileName) != 0)
+    {
+      bezier.reset(
+          new BezierGrindingSurfacing(req.CADFileName, req.GrinderWidth, req.CoveringPercentage, req.ExtricationRadius,
+                                      req.LeanAngle, lean_axis));
+    }
 
+    // Save the PLY file name from command line
+    input_mesh_filename = req.CADFileName;
     status.data = "Generate Bezier trajectory";
     status_pub->publish(status);
     std::string error_string;
-    error_string = bezier.generateTrajectory(way_points_vector, is_grinding_pose);
+    error_string = bezier->generateTrajectory(way_points_vector, is_grinding_pose, req.GrinderWidth,
+                                              req.CoveringPercentage, req.ExtricationRadius, req.LeanAngle, lean_axis);
 
     if (!error_string.empty())
     {
