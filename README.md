@@ -8,7 +8,10 @@
 This is a ROS package of a Fanuc R1000iA 80f with a grinding end effector and a 3D sensor mounted on the end effector.
 This package aims to allow to automatically grind mechanical defects of parts given their CAD model.
 
-![fanuc_grinding](documentation/fanuc_grinding.png)
+![fanuc_grinding app](documentation/fanuc_grinding.png)
+
+[![Fanuc grinding Youtube video](documentation/fanuc_grinding.jpg)](https://www.youtube.com/watch?v=4MaANUry81A)
+Click the image for a video
 
 The [documentation](documentation/README.md) folder contains explanations about how this package works.
 
