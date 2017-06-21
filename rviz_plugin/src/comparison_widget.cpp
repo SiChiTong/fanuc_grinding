@@ -2,7 +2,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "comparison_widget.h"
 

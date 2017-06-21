@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "path_planning_widget.h"
 #include <ros/package.h>

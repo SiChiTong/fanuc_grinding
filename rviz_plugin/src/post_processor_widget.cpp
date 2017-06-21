@@ -5,7 +5,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QSpinBox>
 
 #include "post_processor_widget.h"

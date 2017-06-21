@@ -11,7 +11,7 @@
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -21,7 +21,7 @@
 
 #include <fanuc_grinding_path_planning/PathPlanningService.h> // Description of the Service we will use
 
-boost::shared_ptr<move_group_interface::MoveGroup> group;
+boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> group;
 boost::shared_ptr<ros::NodeHandle> node;
 EigenSTL::vector_Affine3d way_points_vector;
 
@@ -160,7 +160,7 @@ int main(int argc,
   *status_pub = node->advertise <std_msgs::String> ("scanning_status", 1);
 
   // Initialize move group
-  group.reset(new move_group_interface::MoveGroup("grinding_disk"));
+  group.reset(new moveit::planning_interface::MoveGroupInterface("grinding_disk"));
   group->setPoseReferenceFrame("/base_link");
   group->setPlannerId("RRTConnectkConfigDefault");
   group->setPlanningTime(2);

@@ -2,7 +2,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QWidget>
 #include <QTabWidget>
 
@@ -15,7 +15,6 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
 {
   // Create Tabs
   tab_widget_ = new QTabWidget();
-
   scanning_widget_ = new ScanningWidget();
   alignment_widget_ = new AlignmentWidget();
   comparison_widget_ = new ComparisonWidget();
@@ -82,6 +81,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString)),
           alignment_widget_, SLOT(setCADAndScanParams(const QString, const QString)));
 
+
   //COMPARISON
   // Will display a status in general status label ( from comparison widget )
   connect(comparison_widget_, SIGNAL(sendStatus(QString)), this, SLOT(displayStatusHandler(QString)));
@@ -98,6 +98,7 @@ FanucGrindingRvizPlugin::FanucGrindingRvizPlugin(QWidget* parent) :
   // Send a signal to comparison widget in order to give CAD and scan params
   connect(this, SIGNAL(sendCADAndScanDatas(const QString, const QString)),
           comparison_widget_, SLOT(setCADAndScanParams(const QString, const QString)));
+
 
   //PATH PLANNING
   // Will display a status in general status label ( from path_planning widget )
@@ -207,7 +208,6 @@ void FanucGrindingRvizPlugin::sendCADAndScanDatasSlot()
 void FanucGrindingRvizPlugin::save(rviz::Config config) const
 {
   rviz::Panel::save(config);
-
   scanning_widget_->save(config);
   alignment_widget_->save(config);
   comparison_widget_->save(config);
@@ -219,7 +219,6 @@ void FanucGrindingRvizPlugin::save(rviz::Config config) const
 void FanucGrindingRvizPlugin::load(const rviz::Config& config)
 {
   rviz::Panel::load(config);
-
   scanning_widget_->load(config);
   alignment_widget_->load(config);
   comparison_widget_->load(config);

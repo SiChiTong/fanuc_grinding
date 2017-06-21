@@ -4,12 +4,13 @@
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
 #include <rviz/panel.h>
+#endif
+
 #include "scanning_widget.h"
 #include "alignment_widget.h"
 #include "comparison_widget.h"
 #include "path_planning_widget.h"
 #include "post_processor_widget.h"
-#endif
 
 class QTabWidget;
 class QLabel;

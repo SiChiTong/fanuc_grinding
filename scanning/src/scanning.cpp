@@ -11,7 +11,7 @@ one node of the entire demonstrator
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <std_msgs/String.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <yaml-cpp/exceptions.h>
 #include <yaml-cpp/mark.h>
@@ -34,7 +34,7 @@ typedef pcl::PointXYZ PointXYZ;
 typedef pcl::PointCloud<PointXYZ> PointCloudXYZ;
 
 boost::shared_ptr<ros::NodeHandle> node;
-boost::shared_ptr<move_group_interface::MoveGroup> group;
+boost::shared_ptr<moveit::planning_interface::MoveGroupInterface> group;
 
 /** Status publisher */
 boost::shared_ptr<ros::Publisher> status_pub;
@@ -312,7 +312,7 @@ int main(int argc, char **argv)
   node.reset(new ros::NodeHandle);
 
   // Initialize move group
-  group.reset(new move_group_interface::MoveGroup("manipulator"));
+  group.reset(new moveit::planning_interface::MoveGroupInterface("manipulator"));
   group->setPlannerId("RRTConnectkConfigDefault");
   group->setPoseReferenceFrame("/base");
   group->setPlanningTime(2);

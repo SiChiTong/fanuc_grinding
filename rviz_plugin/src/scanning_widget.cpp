@@ -8,7 +8,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "scanning_widget.h"
 
