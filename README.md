@@ -40,7 +40,7 @@ Dependencies
 - [`bezier`](https://github.com/ros-industrial-consortium/bezier)
 - [`fanuc_post_processor`](https://github.com/InstitutMaupertuis/fanuc_post_processor)
 
-This package has been tested with Ubuntu 14.04 and ROS Indigo.
+This package has been tested with Ubuntu 16.04 and ROS Kinetic.
 The package was designed to be used with a Fanuc R1000iA-80f robot, however it should be easy to port it on other ROS compatible robots.
 
 Install
