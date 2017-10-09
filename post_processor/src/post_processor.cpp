@@ -1,8 +1,8 @@
 /************************************************
-Post processor using fanuc_post_processor_library.
-This file which operate post processor represents
-one node of the entire demonstrator
-************************************************/
+ Post processor using fanuc_post_processor_library.
+ This file which operate post processor represents
+ one node of the entire demonstrator
+ ************************************************/
 
 // ROS headers
 #include <ros/ros.h>
@@ -11,7 +11,7 @@ one node of the entire demonstrator
 #include <tf_conversions/tf_eigen.h>
 #include <eigen_conversions/eigen_msg.h>
 #include <geometry_msgs/Transform.h>
-#include "fanuc_post_processor_library/fanuc_post_processor_library.hpp"
+#include "fanuc_post_processor/fanuc_post_processor.hpp"
 
 #include <fanuc_grinding_post_processor/PostProcessorService.h> // Description of the Service we will use
 
@@ -65,7 +65,13 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   fanuc_pp.appendWait(1);
   //speed = req.MachiningSpeed * 100;
   speed = 30;
-  fanuc_pp.appendPoseCNT(FanucPostProcessor::JOINT, robot_poses_eigen[0], 1, speed, FanucPostProcessor::PERCENTAGE, 100);
+
+  FanucPose fanuc_pose;
+  fanuc_pose.move_type_ = FanucPose::MovementType::JOINT;
+  fanuc_pose.speed_ = speed;
+  fanuc_pose.cnt_ = 100;
+  fanuc_pose.setRobotPose(robot_poses_eigen[0]);
+  fanuc_pp.appendPose(fanuc_pose);
 
   for (unsigned i = 1; i < robot_poses_eigen.size(); ++i)
   {
@@ -74,16 +80,18 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, false);
       fanuc_pp.appendWait(1);
-      speed = 50;//req.ExtricationSpeed * 100;
+      speed = 50;  //req.ExtricationSpeed * 100;
     }
     // if the new point is an machining point and the old one was a extrication point, we have to switch on the DO
     else if (req.IsGrindingPose[i] == 1 && req.IsGrindingPose[i - 1] == 0)
     {
       fanuc_pp.appendDigitalOutput(grinding_disk_DO, true);
       fanuc_pp.appendWait(1);
-      speed = 30;//req.MachiningSpeed * 100;
+      speed = 30;  //req.MachiningSpeed * 100;
     }
-    fanuc_pp.appendPoseCNT(FanucPostProcessor::JOINT, robot_poses_eigen[i], i + 1, speed, FanucPostProcessor::PERCENTAGE, 100);
+
+    fanuc_pose.setRobotPose(robot_poses_eigen[i]);
+    fanuc_pp.appendPose(fanuc_pose);
   }
 
   std::string program;
@@ -92,7 +100,6 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
 
   std::ofstream tp_program_file;
   std::string file_location = req.ProgramLocation + req.ProgramName + ".ls";
-
 
   tp_program_file.open(file_location.c_str(), std::ios::out);
   // We check if file have been opened correctly
@@ -126,7 +133,8 @@ bool postProcessor(fanuc_grinding_post_processor::PostProcessorService::Request 
   return true;
 }
 
-int main(int argc, char **argv)
+int main(int argc,
+         char **argv)
 {
   ros::init(argc, argv, "post_processor");
   node.reset(new ros::NodeHandle);
@@ -136,10 +144,7 @@ int main(int argc, char **argv)
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
-  while (node->ok())
-  {
-    sleep(1);
-  }
+  ros::waitForShutdown();
   spinner.stop();
   return 0;
 }

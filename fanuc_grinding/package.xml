@@ -3,7 +3,7 @@
   <name>fanuc_grinding</name>
   <version>0.0.1</version>
   <description>Institut Maupertuis Fanuc grinding package.</description>
-  <author>Victor Lamoine, Kévin Bolloré - Institut Maupertuis</author>
+  <author>Kévin Bolloré, Victor Lamoine - Institut Maupertuis</author>
   <maintainer email="victor.lamoine@gmail.com">Victor Lamoine</maintainer>
   <license>BSD</license>
 
